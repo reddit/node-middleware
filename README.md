@@ -41,7 +41,7 @@ const getData = () => async (dispatch, getState, utils) => {
 
 Thunker performs an additional task. Many times, it becomes necessary to wait for some piece of state to update, or to wait for a particular action to be dispatched before another action is dispatched. Thunker solves this by surfacing two utility methods: `waitForState` and `waitForAction`. Both return a promise that can be `await`-ed on.
 
-#### `waitForState`
+#### waitForState
 
 ```
 waitForState(stateFn: Function, cb: Function [, stateFailedFn: Function]): Promise
@@ -49,18 +49,18 @@ waitForState(stateFn: Function, cb: Function [, stateFailedFn: Function]): Promi
 
 `stateFn(state: Object): Boolean`
 
-    A function that creates the condition that must be met for the callback to fire. Receives a copy of state as its argument. Expected to return a truthy/falsey value.
+A function that creates the condition that must be met for the callback to fire. Receives a copy of state as its argument. Expected to return a truthy/falsey value.
 
 `cb(state: Object): void`
 
-    A function that is called when the conditional is met. Receives a copy of state as its argument.
+A function that is called when the conditional is met. Receives a copy of state as its argument.
 
 `stateFailedFn(state: Object): void` (OPTIONAL)
 
-    A function that is called the *first* time the conditional is *not* met. Only fires once. Receives a copy of state as its argument.
+A function that is called the *first* time the conditional is *not* met. Only fires once. Receives a copy of state as its argument.
 
 
-#### `waitForAction`
+#### waitForAction
 
 ```
 waitForAction(action: Object, cb: Function): Promise
@@ -68,11 +68,11 @@ waitForAction(action: Object, cb: Function): Promise
 
 `action: Object`
 
-    A Redux action that represents the condition that must be met for the callback to fire. Like all Redux actions, must contain the key `type`. *After* `waitForAction` is invoked, if `action` is dispatched, the callback will fire.
+A Redux action that represents the condition that must be met for the callback to fire. Like all Redux actions, must contain the key `type`. *After* `waitForAction` is invoked, if `action` is dispatched, the callback will fire.
 
 `cb(state: Object): void`
 
-    A function that is called when the `action` is dispatched. Receives a copy of state as its argument.
+A function that is called when the `action` is dispatched. Receives a copy of state as its argument.
 
 ### PromiseWell
 The PromiseWell merely collects promises that dispatched by other middleware. It should be one of the last middleware invoked.
