@@ -74,9 +74,6 @@ var compiler = webpack({
   externals: _.extend({
     'lodash/object': 'commonjs lodash/object',
   }, SUB_MODULE_EXTERNALS),
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
-  ],
 });
 
 function formatAsset(asset) {

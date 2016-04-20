@@ -1,1 +1,148 @@
-!function(t,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports["Thunker.js"]=r():t["Thunker.js"]=r()}(this,function(){return function(t){function r(e){if(n[e])return n[e].exports;var o=n[e]={exports:{},id:e,loaded:!1};return t[e].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var n={};return r.m=t,r.c=n,r.p="",r(0)}([function(t,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0});var n=function(){function t(t,r){var n=[],e=!0,o=!1,u=void 0;try{for(var i,f=t[Symbol.iterator]();!(e=(i=f.next()).done)&&(n.push(i.value),!r||n.length!==r);e=!0);}catch(c){o=!0,u=c}finally{try{!e&&f["return"]&&f["return"]()}finally{if(o)throw u}}return n}return function(r,n){if(Array.isArray(r))return r;if(Symbol.iterator in Object(r))return t(r,n);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();r["default"]={create:function(){var t=[],r=[],e=function(t,n){return new Promise(function(n,e){r=r.concat([[t,function(t){return n(t)}]])}).then(n)};return function(o){return function(u){return function(i){var f=o.dispatch,c=o.getState,a=c(),s=function(r,n,e){return new Promise(function(n,e){r(a)?n(a):t=t.concat([[r,function(t){return n(t)}]])}).then(n)};if("function"==typeof i){var p=i(f,c,{waitForState:s,waitForAction:e});if(!(p instanceof Promise))throw new Error("Thunked actions must return promises");return u(p)}return t=t.filter(function(t){var r=n(t,2),e=r[0],o=r[1];return e(a)?(o(a),!1):!0}),r=r.filter(function(t){var r=n(t,2),e=r[0],o=r[1];return i.type===e.type?(o(a),!1):!0}),u(i)}}}}}}])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["Thunker.js"] = factory();
+	else
+		root["Thunker.js"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+	exports.default = {
+	  create: function create() {
+	    var storeQueue = [];
+	    var actionQueue = [];
+
+	    var waitForAction = function waitForAction(action, cb) {
+	      return new Promise(function (resolve, reject) {
+	        actionQueue = actionQueue.concat([[action, function (state) {
+	          return resolve(state);
+	        }]]);
+	      }).then(cb);
+	    };
+
+	    return function (store) {
+	      return function (next) {
+	        return function (action) {
+	          var dispatch = store.dispatch;
+	          var getState = store.getState;
+
+
+	          var state = getState();
+
+	          var waitForState = function waitForState(stateFn, cb, stateFailedFn) {
+	            return new Promise(function (resolve, reject) {
+	              if (!stateFn(state)) {
+	                storeQueue = storeQueue.concat([[stateFn, function (newState) {
+	                  return resolve(newState);
+	                }]]);
+	                stateFailedFn(state);
+	              } else {
+	                resolve(state);
+	              }
+	            }).then(cb);
+	          };
+
+	          if (typeof action === 'function') {
+	            var result = action(dispatch, getState, { waitForState: waitForState, waitForAction: waitForAction });
+
+	            if (!(result instanceof Promise)) {
+	              throw new Error('Thunked actions must return promises');
+	            }
+
+	            return next(result);
+	          }
+
+	          storeQueue = storeQueue.filter(function (_ref) {
+	            var _ref2 = _slicedToArray(_ref, 2);
+
+	            var stateFn = _ref2[0];
+	            var cb = _ref2[1];
+
+	            if (stateFn(state)) {
+	              cb(state);
+	              return false;
+	            }
+
+	            return true;
+	          });
+
+	          actionQueue = actionQueue.filter(function (_ref3) {
+	            var _ref4 = _slicedToArray(_ref3, 2);
+
+	            var waitAction = _ref4[0];
+	            var cb = _ref4[1];
+
+	            if (action.type === waitAction.type) {
+	              cb(state);
+	              return false;
+	            }
+
+	            return true;
+	          });
+
+	          return next(action);
+	        };
+	      };
+	    };
+	  }
+	};
+
+/***/ }
+/******/ ])
+});
+;
