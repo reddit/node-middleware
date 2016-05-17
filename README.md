@@ -63,12 +63,12 @@ A function that is called the *first* time the conditional is *not* met. Only fi
 #### waitForAction
 
 ```
-waitForAction(action: Object, cb: Function): Promise
+waitForAction(actionFn: Function, cb: Function): Promise
 ```
 
-`action: Object`
+`actionFn: Function(action: Object)`
 
-A Redux action that represents the condition that must be met for the callback to fire. Like all Redux actions, must contain the key `type`. *After* `waitForAction` is invoked, if `action` is dispatched, the callback will fire.
+A function that receives a Redux action, represents the condition that must be met for the callback to fire. *After* `waitForAction` is invoked, if `action` is dispatched, the callback will fire.
 
 `cb(state: Object): void`
 
