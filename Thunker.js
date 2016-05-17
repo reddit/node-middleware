@@ -67,9 +67,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var storeQueue = [];
 	    var actionQueue = [];
 
-	    var waitForAction = function waitForAction(action, cb) {
+	    var waitForAction = function waitForAction(actionFn) {
+	      var cb = arguments.length <= 1 || arguments[1] === undefined ? function () {} : arguments[1];
 	      return new Promise(function (resolve, reject) {
-	        actionQueue = actionQueue.concat([[action, function (state) {
+	        actionQueue = actionQueue.concat([[actionFn, function (state) {
 	          return resolve(state);
 	        }]]);
 	      }).then(cb);
@@ -84,7 +85,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var state = getState();
 
-	          var waitForState = function waitForState(stateFn, cb, stateFailedFn) {
+	          var waitForState = function waitForState(stateFn) {
+	            var cb = arguments.length <= 1 || arguments[1] === undefined ? function () {} : arguments[1];
+	            var stateFailedFn = arguments.length <= 2 || arguments[2] === undefined ? function () {} : arguments[2];
 	            return new Promise(function (resolve, reject) {
 	              if (!stateFn(state)) {
 	                storeQueue = storeQueue.concat([[stateFn, function (newState) {
@@ -124,10 +127,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          actionQueue = actionQueue.filter(function (_ref3) {
 	            var _ref4 = _slicedToArray(_ref3, 2);
 
-	            var waitAction = _ref4[0];
+	            var actionFn = _ref4[0];
 	            var cb = _ref4[1];
 
-	            if (action.type === waitAction.type) {
+	            if (actionFn(action)) {
 	              cb(state);
 	              return false;
 	            }
