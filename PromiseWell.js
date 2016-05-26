@@ -63,6 +63,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  create: function create() {
 	    var queue = [];
 
+	    var processQueue = function processQueue(index, cb) {
+	      var p = queue[index];
+
+	      if (p) {
+	        p.then(function () {
+	          return processQueue(index + 1, cb);
+	        });
+	      } else {
+	        cb();
+	      }
+	    };
+
 	    return {
 	      middleware: function middleware(store) {
 	        return function (next) {
@@ -77,7 +89,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	      },
 	      onComplete: function onComplete() {
-	        return Promise.all(queue);
+	        return new Promise(function (resolve, reject) {
+	          processQueue(0, resolve);
+	        }).then(function () {
+	          queue = [];
+	        });
 	      }
 	    };
 	  }

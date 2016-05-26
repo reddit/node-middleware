@@ -4,6 +4,8 @@
   "description": "Middleware for Redux",
   "main": "middleware.js",
   "scripts": {
+    "build": "node compile.js",
+    "watch": "npm run build -- --watch",
     "lint": "eslint lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
