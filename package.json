@@ -1,6 +1,6 @@
 {
   "name": "@r/middleware",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Middleware for Redux",
   "main": "middleware.js",
   "scripts": {
