@@ -110,25 +110,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return next(result);
 	          }
 
-	          storeQueue = storeQueue.filter(function (_ref) {
+	          actionQueue = actionQueue.filter(function (_ref) {
 	            var _ref2 = _slicedToArray(_ref, 2);
 
-	            var stateFn = _ref2[0];
+	            var actionFn = _ref2[0];
 	            var cb = _ref2[1];
-
-	            if (stateFn(state)) {
-	              cb(state);
-	              return false;
-	            }
-
-	            return true;
-	          });
-
-	          actionQueue = actionQueue.filter(function (_ref3) {
-	            var _ref4 = _slicedToArray(_ref3, 2);
-
-	            var actionFn = _ref4[0];
-	            var cb = _ref4[1];
 
 	            if (actionFn(action)) {
 	              cb(state);
@@ -138,7 +124,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return true;
 	          });
 
-	          return next(action);
+	          // order of operations is very important here.
+	          // for the store queue to process properly, we need to let the new action
+	          // make its way into the store first before we check if any queued
+	          // waitForState situations are resolveable
+	          next(action);
+
+	          // also important, the store queue filter function must re-fetch state
+	          // using getState, otherwise the aforementioned action's effects will not
+	          // be reflected in the filter function.
+	          storeQueue = storeQueue.filter(function (_ref3) {
+	            var _ref4 = _slicedToArray(_ref3, 2);
+
+	            var stateFn = _ref4[0];
+	            var cb = _ref4[1];
+
+	            var state = getState();
+	            if (stateFn(state)) {
+	              cb(state);
+	              return false;
+	            }
+
+	            return true;
+	          });
 	        };
 	      };
 	    };
