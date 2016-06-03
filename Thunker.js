@@ -138,7 +138,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return true;
 	          });
 
-	          return next(action);
+	          next(action);
+
+	          // re-check store after the action completes
+	          if (storeQueue.length) {
+	            storeQueue = storeQueue.filter(function (_ref5) {
+	              var _ref6 = _slicedToArray(_ref5, 2);
+
+	              var stateFn = _ref6[0];
+	              var cb = _ref6[1];
+
+	              if (stateFn(state)) {
+	                cb(state);
+	                return false;
+	              }
+
+	              return true;
+	            });
+	          }
 	        };
 	      };
 	    };
