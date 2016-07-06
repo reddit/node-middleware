@@ -81,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return function (action) {
 	            if (action instanceof Promise) {
 	              queue.push(action);
-	              return;
+	              return action;
 	            }
 
 	            return next(action);
